@@ -42,15 +42,15 @@ class _HomeState extends State<Home> {
             title: Text('Home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.file_upload),
+            icon: Icon(Icons.cloud_upload),
             title: Text('Sell'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
+            icon: Icon(Icons.card_giftcard),
             title: Text('Donate'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.receipt),
             title: Text('Rent'),
           ),
         ],

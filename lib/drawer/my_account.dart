@@ -56,6 +56,13 @@ class _MyAccountState extends State<MyAccount> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: Text('My Account'),
         actions: <Widget>[
           FlatButton(
@@ -83,7 +90,7 @@ class _MyAccountState extends State<MyAccount> {
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return  Center(child: CircularProgressIndicator());
+              return Center(child: CircularProgressIndicator());
             }
             var userDocument = snapshot.data;
             print(userDocument);
@@ -93,7 +100,6 @@ class _MyAccountState extends State<MyAccount> {
                   height: 100,
                 ),
                 checkUser(userDocument),
-
               ],
             );
           }),
@@ -154,14 +160,13 @@ class _MyAccountState extends State<MyAccount> {
                 style: TextStyle(fontSize: 25, color: Colors.white),
               )),
             ),
-
           ),
           ListTile(
             title: Center(
                 child: Text(
-                  userDocument["phone"],
-                  style: TextStyle(fontSize: 25),
-                )),
+              userDocument["phone"],
+              style: TextStyle(fontSize: 25),
+            )),
           ),
         ],
       );

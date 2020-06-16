@@ -11,26 +11,51 @@ class ProductTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      width: width,
-      child: Card(
-        child: ListTile(
-          title: Text(
-            product.name,
-            style: TextStyle(fontSize: 18),
-          ),
-          subtitle: Text(
-            'Price: ${product.price}',
-            style: TextStyle(
-              fontSize: 15,
-            ),
-          ),
-          trailing: Icon(Icons.arrow_forward_ios),
-          onTap: onTap,
+    return Column(
+      children: <Widget>[
+        Container(
+          height: height,
+          width: width,
+          child: GestureDetector(
+            onTap: onTap,
+              child: my_card ('assets/display1.jpg', product.name)),
         ),
-      ),
+      ],
     );
   }
 }
+
+
+Widget my_card (String my_img, String my_txt) {
+  return Container(
+    margin: EdgeInsets.only( top: 9.0),
+    constraints: new BoxConstraints.expand(
+      height: 150.0,
+      width: 80,
+    ),
+    alignment: Alignment.center,
+    decoration: new BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.8),
+          spreadRadius: 1,
+          blurRadius: 9,
+          offset: Offset(0, 7), // changes position of shadow
+        ),
+      ],
+      image: new DecorationImage(
+        image: new AssetImage(my_img),
+        fit: BoxFit.cover,
+      ),
+    ),
+    child: Center(
+      child: new Text(my_txt,
+          style: new TextStyle(
+            fontSize: 25.0,
+            color: Colors.white,
+          )),
+    ),
+  );
+}
+
 

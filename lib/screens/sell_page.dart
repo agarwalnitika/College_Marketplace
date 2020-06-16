@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:marketplace/common_widgets/allProduct_list_tile.dart';
 import 'package:marketplace/sell/add_edit_product.dart';
 import 'package:marketplace/common_widgets/empty_content.dart';
-import 'package:marketplace/common_widgets/product_list_tile.dart';
 import 'package:marketplace/models/product.dart';
 import 'package:marketplace/services/database.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +67,7 @@ class MyProducts extends StatelessWidget {
               background: Container(color: Colors.red,),
               direction: DismissDirection.endToStart,
               onDismissed: (direction) => _delete(context , product),
-              child: ProductTile(
+              child: AllProductTile(
                 product: product,
                 onTap: () => AddEditProduct.show(context, product: product),
               ),

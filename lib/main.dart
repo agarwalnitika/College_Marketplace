@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marketplace/landing_page.dart';
 import 'package:marketplace/services/auth.dart';
+import 'package:marketplace/services/database.dart';
 import 'package:provider/provider.dart';
 
 import 'authentication/sign_in.dart';

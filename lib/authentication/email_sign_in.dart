@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:marketplace/administration/add_category.dart';
+import 'package:marketplace/authentication/forgot_password.dart';
 import 'package:marketplace/authentication/validators.dart';
 import 'package:marketplace/common_widgets/form_submit_button.dart';
 import 'package:marketplace/services/auth.dart';
 import 'package:provider/provider.dart';
 
 class EmailSignIn extends StatefulWidget {
-
   @override
   _EmailSignInState createState() => _EmailSignInState();
 }
 
 class _EmailSignInState extends State<EmailSignIn> {
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         elevation: 2.0,
@@ -26,9 +25,7 @@ class _EmailSignInState extends State<EmailSignIn> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Card(
-            child: EmailForm(
-
-            ),
+            child: EmailForm(),
           ),
         ),
       ),
@@ -37,7 +34,6 @@ class _EmailSignInState extends State<EmailSignIn> {
 }
 
 class EmailForm extends StatefulWidget with SignInValidator {
-
   @override
   _EmailFormState createState() => _EmailFormState();
 }
@@ -60,12 +56,11 @@ class _EmailFormState extends State<EmailForm> {
   }
 
   void _emailEditingComplete() {
-
-    final newFocus = widget.emailValidator.isValid(_email) ? _passwordFocusNode : _emailFocusNode;
+    final newFocus = widget.emailValidator.isValid(_email)
+        ? _passwordFocusNode
+        : _emailFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
   }
-
-
 
   _updateState() {
     setState(() {});
@@ -77,10 +72,9 @@ class _EmailFormState extends State<EmailForm> {
       _isLoading = true;
     });
     try {
-
-        final auth = Provider.of<AuthBase>(context);
-        await auth.signInWithEmail(_email, _password);
-        Navigator.of(context).pop();
+      final auth = Provider.of<AuthBase>(context);
+      await auth.signInWithEmail(_email, _password);
+      Navigator.of(context).pop();
     } catch (e) {
       showDialog(
           context: context,
@@ -100,13 +94,10 @@ class _EmailFormState extends State<EmailForm> {
           });
       _emailController.clear();
       _passwordController.clear();
-
-
     } finally {
       setState(() {
         _isLoading = false;
       });
-
     }
   }
 
@@ -124,7 +115,7 @@ class _EmailFormState extends State<EmailForm> {
 
   List<Widget> _buildChildren() {
     bool submitEnabled = widget.emailValidator.isValid(_email) &&
-        widget.passwordValidator.isValid(_password)  &&
+        widget.passwordValidator.isValid(_password) &&
         !_isLoading;
     return [
       _emailTextField(),
@@ -135,11 +126,21 @@ class _EmailFormState extends State<EmailForm> {
       SizedBox(
         height: 8,
       ),
-
       FormSubmitButton(
         text: 'Sign In',
         onPressed: submitEnabled ? _submit : null,
-      )
+      ),
+      FlatButton(
+        onPressed: () => ForgotPassword.show(context),
+        child: Text(
+          'Forgot Password?',
+          style: TextStyle(
+              color: Colors.black54,
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.black54,
+              fontSize: 15),
+        ),
+      ),
     ];
   }
 
@@ -181,6 +182,4 @@ class _EmailFormState extends State<EmailForm> {
       onEditingComplete: _submit,
     );
   }
-
-
 }

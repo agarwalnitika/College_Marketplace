@@ -29,6 +29,7 @@ class Buy extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         centerTitle: true,
         title: Text('College MarketPlace'),
@@ -106,8 +107,8 @@ class Buy extends StatelessWidget {
                               context,
                               product: product,
                             ),
-                            height: 100,
-                            width: 190,
+                            height: 150,
+                            width: 300,
                           ))
                       .toList();
                   return ListView(

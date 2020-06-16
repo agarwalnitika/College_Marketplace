@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marketplace/drawer/my_account.dart';
 import 'package:marketplace/services/database.dart';
 import 'package:provider/provider.dart';
 
@@ -155,7 +156,6 @@ class SideBar extends StatelessWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-
             },
           ),
         ],
