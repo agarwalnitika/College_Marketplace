@@ -3,9 +3,7 @@ import 'package:marketplace/common_widgets/empty_content.dart';
 import 'package:marketplace/models/category.dart';
 import 'package:marketplace/services/database.dart';
 import 'package:provider/provider.dart';
-
-import 'add_category.dart';
-import 'category_list_tile.dart';
+import 'package:marketplace/common_widgets/category_list_tile.dart';
 
 class CategoryList extends StatefulWidget {
   CategoryList({Key key, @required this.database, this.category})
@@ -15,13 +13,12 @@ class CategoryList extends StatefulWidget {
 
   static Future<void> show(BuildContext context,
       {Category category}) async {
-    final database = Provider.of<Database>(context);
+
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CategoryList(
-          database: database,
           category: category,
-
+          database: database,
         ),
         fullscreenDialog: false,
       ),
@@ -43,28 +40,23 @@ class _CategoryListState extends State<CategoryList> {
         title: Text('Category List'),
         actions: <Widget>[],
       ),
-      body: StreamBuilder<List<Category>>(
+      body:  StreamBuilder<List<Category>>(
         stream: database.allCategoriesStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final allCategories = snapshot.data;
             if (allCategories.isNotEmpty) {
               final children = allCategories
-                  .map((category) => Dismissible(
-                        key: Key('product-${category.id}'),
-                        background: Container(
-                          color: Colors.red,
-                        ),
-                        direction: DismissDirection.endToStart,
-                        onDismissed: null,
-                        child: CategoryTile(
-                          category: category,
-                          onTap: () =>
-                              AddCategory.show(context, category: category),
-                        ),
-                      ))
+                  .map((category) => CategoryTile(
+                category: category,
+
+              ))
                   .toList();
-              return ListView(children: children);
+              return ListView(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                children: children,
+              );
             }
             return EmptyContent();
           }
@@ -77,6 +69,7 @@ class _CategoryListState extends State<CategoryList> {
           return Center(child: CircularProgressIndicator());
         },
       ),
+
     );
   }
 }

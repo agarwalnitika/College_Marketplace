@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:marketplace/buy/product_details.dart';
+import 'package:marketplace/common_widgets/category_list_tile.dart';
 import 'package:marketplace/common_widgets/empty_content.dart';
 import 'package:marketplace/common_widgets/product_list_tile.dart';
+import 'package:marketplace/models/category.dart';
 import 'package:marketplace/models/product.dart';
 import 'package:marketplace/services/database.dart';
 import 'package:provider/provider.dart';
@@ -51,20 +53,16 @@ class Buy extends StatelessWidget {
         ),
 
         Flexible(
-          child: StreamBuilder<List<SingleProduct>>(
-            stream: database.allProductsStream(),
+          child: StreamBuilder<List<Category>>(
+            stream: database.allCategoriesStream(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                final allProducts = snapshot.data;
-                if (allProducts.isNotEmpty) {
-                  final children = allProducts
-                      .map((product) => ProductTile(
-                    product: product,
-                    onTap: () => Product_Details(
-                      product: product,
-                    ),
-                    height: 100,
-                    width: 170,
+                final allCategories = snapshot.data;
+                if (allCategories.isNotEmpty) {
+                  final children = allCategories
+                      .map((category) => CategoryTile(
+                   category: category,
+                   
                   ))
                       .toList();
                   return ListView(
@@ -107,10 +105,10 @@ class Buy extends StatelessWidget {
                       .map((product) => ProductTile(
                             product: product,
                             onTap: () => Product_Details.show(
-                              context
+                              context , product: product,
                             ),
                             height: 100,
-                            width: 170,
+                            width: 190,
                           ))
                       .toList();
                   return ListView(
@@ -119,7 +117,10 @@ class Buy extends StatelessWidget {
                     children: children,
                   );
                 }
-                return EmptyContent();
+                return EmptyContent(
+                  title: 'Nothing Here',
+                  message: 'No products to show',
+                );
               }
               if (snapshot.hasError) {
                 return EmptyContent(

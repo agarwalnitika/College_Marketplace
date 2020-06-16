@@ -18,7 +18,7 @@ class ProductTile extends StatelessWidget {
         child: ListTile(
           title: Text(
             product.name,
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 18),
           ),
           subtitle: Text(
             'Price: ${product.price}',

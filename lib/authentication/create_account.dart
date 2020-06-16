@@ -84,9 +84,9 @@ class _AccountFormState extends State<AccountForm> {
     try {
       final auth = Provider.of<AuthBase>(context);
       await auth.createUserWithEmail(
-          _nameController.text,
-          _passwordController.text,
           _emailController.text,
+          _passwordController.text,
+          _nameController.text,
           _phoneController.text);
       Navigator.of(context).pop();
     } catch (e) {

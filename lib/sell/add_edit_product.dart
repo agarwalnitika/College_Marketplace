@@ -72,9 +72,6 @@ class _AddEditProductState extends State<AddEditProduct> {
     if (_validateAndSaveForm()) {
       try {
         final id = widget.product?.id ?? documentIdFromCurrentDate();
-        final auth = Provider.of<StorageService>(context);
-        await auth.uploadFile();
-
 
         final product = SingleProduct(
             id: id, name: _name, price: _price, description: _description);
