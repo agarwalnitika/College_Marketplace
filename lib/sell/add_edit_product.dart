@@ -1,11 +1,8 @@
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:marketplace/models/product.dart';
-import 'package:marketplace/services/auth.dart';
 import 'package:marketplace/services/database.dart';
-import 'package:marketplace/services/storage_service.dart';
 import 'package:provider/provider.dart';
 
 class AddEditProduct extends StatefulWidget {

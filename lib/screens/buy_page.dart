@@ -131,8 +131,6 @@ class Buy extends StatelessWidget {
             },
           ),
         ),
-
-
       ],
     );
   }

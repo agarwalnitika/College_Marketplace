@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:marketplace/common_widgets/avatar.dart';
+import 'package:marketplace/common_widgets/empty_content.dart';
 import 'package:marketplace/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as Path;
@@ -58,11 +59,13 @@ class _MyAccountState extends State<MyAccount> {
         title: Text('My Account'),
         actions: <Widget>[
           FlatButton(
-            child: Text(
-              'Logout',
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.white,
+            child: Center(
+              child: Text(
+                'Logout',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.white,
+                ),
               ),
             ),
             onPressed: () => _signOut(context),
@@ -80,29 +83,17 @@ class _MyAccountState extends State<MyAccount> {
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return new Text("Loading");
+              return  Center(child: CircularProgressIndicator());
             }
             var userDocument = snapshot.data;
-            print(user.uid);
-            return  ListView(
+            print(userDocument);
+            return ListView(
               children: <Widget>[
-                SizedBox(height: 100,),
-                Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topRight,
-                          end: Alignment.bottomLeft,
-                          colors: [Colors.lightBlue, Colors.indigo])),
-                  child: ListTile(
-                    onTap: (){},
-                    title: Center(child: Text(userDocument["name"], style: TextStyle(fontSize: 25,color: Colors.white),)),
-                  ),
-                ), ListTile(
-                  title: Center(child: Text(userDocument["phone"], style: TextStyle(fontSize: 2),)),
+                SizedBox(
+                  height: 100,
                 ),
+                checkUser(userDocument),
 
-
-                Text(userDocument['name']),
               ],
             );
           }),
@@ -133,5 +124,47 @@ class _MyAccountState extends State<MyAccount> {
           ),
       ],
     );
+  }
+
+  checkUser(DocumentSnapshot userDocument) {
+    if (userDocument['email'] == null) {
+      return Container(
+        height: 250,
+        child: Center(
+          child: EmptyContent(
+            title: "No Account Found :(",
+            message: 'Register yourself to get started',
+          ),
+        ),
+      );
+    } else {
+      return Column(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [Colors.lightBlue, Colors.indigo])),
+            child: ListTile(
+              onTap: () {},
+              title: Center(
+                  child: Text(
+                userDocument["name"],
+                style: TextStyle(fontSize: 25, color: Colors.white),
+              )),
+            ),
+
+          ),
+          ListTile(
+            title: Center(
+                child: Text(
+                  userDocument["phone"],
+                  style: TextStyle(fontSize: 25),
+                )),
+          ),
+        ],
+      );
+    }
   }
 }

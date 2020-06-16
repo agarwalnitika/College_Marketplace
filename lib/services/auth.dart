@@ -50,7 +50,18 @@ class Auth implements AuthBase {
 
   Future<User> signInAnonymously() async {
     final authResult = await _firebaseAuth.signInAnonymously();
+    var firebaseUser = await _firebaseAuth.currentUser();
+    _firestoreAuth.collection("users").document(firebaseUser.uid).setData({
+      "image": null,
+      "name": null,
+      "phone": null,
+      "email": null,
+      "password": null,
+    }).then((_) {
+      print("Done");
+    });
     return _userFromFirebase(authResult.user);
+
   }
 
   Future<User> signInWithEmail(String email, String password) async {
