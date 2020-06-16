@@ -43,7 +43,7 @@ class Buy extends StatelessWidget {
       children: <Widget>[
         image_carousel,
         Padding(
-          padding: const EdgeInsets.all( 12.0),
+          padding: const EdgeInsets.all(12.0),
           child: Text(
             'Categories',
             style: TextStyle(
@@ -51,8 +51,8 @@ class Buy extends StatelessWidget {
             ),
           ),
         ),
-
         Flexible(
+          flex: 1,
           child: StreamBuilder<List<Category>>(
             stream: database.allCategoriesStream(),
             builder: (context, snapshot) {
@@ -61,9 +61,8 @@ class Buy extends StatelessWidget {
                 if (allCategories.isNotEmpty) {
                   final children = allCategories
                       .map((category) => CategoryTile(
-                   category: category,
-                   
-                  ))
+                            category: category,
+                          ))
                       .toList();
                   return ListView(
                     shrinkWrap: true,
@@ -83,9 +82,8 @@ class Buy extends StatelessWidget {
             },
           ),
         ),
-
         Padding(
-          padding: const EdgeInsets.all( 12.0),
+          padding: const EdgeInsets.all(12.0),
           child: Text(
             'Products',
             style: TextStyle(
@@ -93,8 +91,8 @@ class Buy extends StatelessWidget {
             ),
           ),
         ),
-
         Flexible(
+          flex: 2,
           child: StreamBuilder<List<SingleProduct>>(
             stream: database.allProductsStream(),
             builder: (context, snapshot) {
@@ -105,7 +103,8 @@ class Buy extends StatelessWidget {
                       .map((product) => ProductTile(
                             product: product,
                             onTap: () => Product_Details.show(
-                              context , product: product,
+                              context,
+                              product: product,
                             ),
                             height: 100,
                             width: 190,
@@ -132,6 +131,8 @@ class Buy extends StatelessWidget {
             },
           ),
         ),
+
+
       ],
     );
   }

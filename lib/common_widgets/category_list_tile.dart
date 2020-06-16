@@ -15,13 +15,17 @@ class CategoryTile extends StatelessWidget {
       height: 40,
       width: 130,
       child: Card(
-        child: ListTile(
-          title: Text(
-            category.name,
-            style: TextStyle(fontSize: 20),
-          ),
+        child: Column(
+          children: <Widget>[
+         ListTile(
+        onTap: null,
+          title: Image.asset('assets/ticket.webp',
+            width: 100,
+            height: 80,),
+          subtitle: Text(
+            category.name,textAlign: TextAlign.center, style: TextStyle(fontSize: 20),),),
 
-          onTap: () => AddCategory.show(context, category: category),
+          ],
         ),
       ),
     );

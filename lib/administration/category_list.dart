@@ -13,12 +13,13 @@ class CategoryList extends StatefulWidget {
 
   static Future<void> show(BuildContext context,
       {Category category}) async {
-
+    final database = Provider.of<Database>(context);
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CategoryList(
-          category: category,
           database: database,
+          category: category,
+
         ),
         fullscreenDialog: false,
       ),
