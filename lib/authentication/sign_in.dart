@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:marketplace/administration/admin.dart';
+import 'package:marketplace/administration/admin_manage.dart';
 
 import 'package:marketplace/authentication/create_account.dart';
 import 'package:marketplace/authentication/email_sign_in.dart';

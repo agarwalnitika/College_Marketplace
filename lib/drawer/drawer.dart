@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:marketplace/drawer/my_account.dart';
-import 'package:marketplace/services/database.dart';
-import 'package:provider/provider.dart';
+import 'package:marketplace/drawer/about.dart';
 
-class SideBar extends StatelessWidget {
+
+class SideBar extends StatefulWidget {
+  @override
+  _SideBarState createState() => _SideBarState();
+}
+
+class _SideBarState extends State<SideBar> {
   @override
   Widget build(BuildContext context) {
-    final database = Provider.of<Database>(context);
+
+
 
     return Container(
       width: 280.0,
@@ -117,7 +122,13 @@ class SideBar extends StatelessWidget {
               Icons.arrow_forward,
               color: Colors.white,
             ),
-            onTap: () {},
+            onTap: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => About()),
+              );
+            },
           ),
 
           ListTile(
@@ -155,7 +166,7 @@ class SideBar extends StatelessWidget {
               color: Colors.white,
             ),
             onTap: () {
-              Navigator.pop(context);
+
             },
           ),
         ],

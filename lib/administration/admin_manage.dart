@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:marketplace/administration/category_list.dart';
+import 'package:marketplace/screens/donation_page.dart';
+import 'package:marketplace/screens/sell_page.dart';
+import 'package:marketplace/sell/add_edit_product.dart';
 import 'package:marketplace/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'add_category.dart';
+import 'add_donations.dart';
 import 'category_list.dart';
 
 
@@ -64,6 +68,42 @@ class AdminPage extends StatelessWidget {
             leading: Icon(Icons.category),
             title: Text("Category List"),
             onTap: () => CategoryList.show(context),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.category),
+            title: Text("Add Product"),
+            onTap: () => AddEditProduct.show(context),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.category),
+            title: Text("Products List"),
+            onTap: () => CategoryList.show(context),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.category),
+            title: Text("All Products"),
+            onTap: () => MyProducts.show(context),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.category),
+            title: Text("Add Donation"),
+            onTap: () =>  AddEditDonation.show(context),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.category),
+            title: Text("Donation List"),
+            onTap: () => CategoryList.show(context),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.category),
+            title: Text("All Donations"),
+            onTap: () => {},
           ),
         ],
       ),

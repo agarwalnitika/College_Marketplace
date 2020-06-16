@@ -1,24 +1,24 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:marketplace/models/product.dart';
+import 'package:marketplace/models/donation.dart';
 import 'package:marketplace/services/database.dart';
 import 'package:provider/provider.dart';
 
-class AddEditProduct extends StatefulWidget {
-  AddEditProduct({Key key, @required this.database, this.product})
+class AddEditDonation extends StatefulWidget {
+  AddEditDonation({Key key, @required this.database, this.donation})
       : super(key: key);
   final Database database;
-  final SingleProduct product;
+  final DonationEvent donation;
 
   static Future<void> show(BuildContext context,
-      {SingleProduct product}) async {
+      {DonationEvent donation}) async {
     final database = Provider.of<Database>(context);
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => AddEditProduct(
+        builder: (context) => AddEditDonation(
           database: database,
-          product: product,
+          donation: donation,
         ),
         fullscreenDialog: true,
       ),
@@ -26,25 +26,29 @@ class AddEditProduct extends StatefulWidget {
   }
 
   @override
-  _AddEditProductState createState() => _AddEditProductState();
+  _AddEditDonationState createState() => _AddEditDonationState();
 }
 
-class _AddEditProductState extends State<AddEditProduct> {
+class _AddEditDonationState extends State<AddEditDonation> {
   final _formKey = GlobalKey<FormState>();
   String _name;
-  int _price;
+  String _date;
   String _description;
+  String _owner;
+  int _contact;
   File _image;
-  String owner;
-  String contact;
+
 
   @override
   void initState() {
     super.initState();
-    if (widget.product != null) {
-      _name = widget.product.name;
-      _price = widget.product.price;
-      _description = widget.product.description;
+    if (widget.donation != null) {
+      _name = widget.donation.name;
+      _date = widget.donation.date;
+      _description = widget.donation.description;
+      _owner = widget.donation.owner;
+      _contact = widget.donation.contact;
+
     }
   }
 
@@ -68,17 +72,17 @@ class _AddEditProductState extends State<AddEditProduct> {
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
       try {
-        final id = widget.product?.id ?? documentIdFromCurrentDate();
-        final product = SingleProduct(
-            id: id, name: _name, price: _price, description: _description ,);
-        await widget.database.create_edit_Product(product ,owner: owner , contact: contact);
+        final id = widget.donation?.id ?? documentIdFromCurrentDate();
+        final donation = DonationEvent(
+          id: id, name: _name, date: _date, description: _description , owner: _owner, contact: _contact);
+        await widget.database.create_edit_Donation(donation );
         Navigator.of(context).pop();
       } catch (e) {
         showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text('Product Creation Failed'),
+                title: Text('Event Creation Failed'),
                 actions: <Widget>[
                   FlatButton(
                     child: Text('OK'),
@@ -99,7 +103,7 @@ class _AddEditProductState extends State<AddEditProduct> {
       appBar: AppBar(
         centerTitle: true,
         elevation: 2.0,
-        title: Text(widget.product == null ? 'New Product' : 'Edit Product'),
+        title: Text(widget.donation == null ? 'New Donation Event' : 'Edit Event'),
         actions: <Widget>[
           FlatButton(
             child: Text(
@@ -147,7 +151,7 @@ class _AddEditProductState extends State<AddEditProduct> {
           padding: const EdgeInsets.all(8.0),
           child: OutlineButton(
             borderSide:
-                BorderSide(color: Colors.grey.withOpacity(0.7), width: 2.5),
+            BorderSide(color: Colors.grey.withOpacity(0.7), width: 2.5),
             onPressed: chooseFile,
             child: _displayChild(),
           ),
@@ -155,23 +159,37 @@ class _AddEditProductState extends State<AddEditProduct> {
       ),
       TextFormField(
         initialValue: _name,
-        decoration: InputDecoration(labelText: 'Product Name'),
+        decoration: InputDecoration(labelText: 'Event Name'),
         validator: (value) => value.isNotEmpty ? null : 'Name can\'t be empty',
         onSaved: (value) => _name = value,
       ),
       TextFormField(
-        initialValue: _price != null ? '$_price' : null,
-        decoration: InputDecoration(labelText: 'Product Price'),
-        onSaved: (value) => _price = int.tryParse(value) ?? 0,
-        validator: (value) => value.isNotEmpty ? null : 'Price can\'t be empty',
+        initialValue: _date != null ? '$_date' : null,
+        decoration: InputDecoration(labelText: 'Event Date'),
+        onSaved: (value) => _date = value,
+        validator: (value) => value.isNotEmpty ? null : 'Date can\'t be empty',
         keyboardType: TextInputType.number,
       ),
       TextFormField(
         initialValue: _description,
-        decoration: InputDecoration(labelText: 'Product Description'),
+        decoration: InputDecoration(labelText: 'Event Description'),
         onSaved: (value) => _description = value,
         validator: (value) =>
-            value.isNotEmpty ? null : 'Description can\'t be empty',
+        value.isNotEmpty ? null : 'Description can\'t be empty',
+      ),
+      TextFormField(
+        initialValue: _owner,
+        decoration: InputDecoration(labelText: 'Event Owner'),
+        onSaved: (value) => _owner = value,
+        validator: (value) =>
+        value.isNotEmpty ? null : 'Owner name can\'t be empty',
+      ),
+      TextFormField(
+        initialValue:  _contact != null ? '$_contact' : null,
+        decoration: InputDecoration(labelText: 'Event Contact'),
+        onSaved: (value) => _contact = int.tryParse(value) ?? 0,
+        validator: (value) =>
+        value.isNotEmpty ? null : 'Contact can\'t be empty',
       ),
     ];
   }

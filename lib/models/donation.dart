@@ -1,37 +1,42 @@
 import 'package:meta/meta.dart';
 
-class SingleProduct{
-  SingleProduct({@required this.imageUrl,@required this.id,@required this.name, @required this.price, @required this.description, this.owner,this.contact });
+class DonationEvent{
+  DonationEvent({this.imageUrl,@required this.id,@required this.name, @required this.date, @required this.description,@required this.owner,@required this.contact });
   final imageUrl;
   final id;
   final String name;
-  final int price;
+  final String date;
   final String description;
   final String owner;
   final int contact;
 
-  factory SingleProduct.fromMap(Map<String, dynamic> data , String documentID ) {
+  factory DonationEvent.fromMap(Map<String, dynamic> data , String documentID ) {
     if(data == null){
       return null;
     }
     final String name = data['name'];
-    final int price = data['price'];
+    final String date = data['date'];
     final String description = data['description'];
     final String imageUrl = data['imageUrl'];
-    return SingleProduct(
+    final String owner = data['owner'];
+    final int contact = data['contact'];
+    return DonationEvent(
       id: documentID,
       imageUrl: imageUrl,
       name: name,
-      price: price,
+      date: date,
       description: description,
+      owner: owner,
+      contact: contact,
+
     );
   }
 
-  Map<String, dynamic> toMap({String owner , String contact}) {
+  Map<String, dynamic> toMap() {
     return {
       'imageUrl': imageUrl,
       'name': name,
-      'price': price,
+      'date': date,
       'description': description,
       'owner': owner,
       'contact': contact,

@@ -8,6 +8,27 @@ import 'package:provider/provider.dart';
 
 
 class MyProducts extends StatelessWidget {
+  MyProducts({Key key, @required this.database, this.product})
+      : super(key: key);
+  final Database database;
+  final SingleProduct product;
+
+  static Future<void> show(BuildContext context,
+      {SingleProduct product}) async {
+    final database = Provider.of<Database>(context);
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => MyProducts(
+          database: database,
+          product: product,
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+  }
+
+
+
 
   Future<void> _delete(BuildContext context, SingleProduct product) async {
     try{

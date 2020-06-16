@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:marketplace/models/product.dart';
+import 'package:marketplace/models/donation.dart';
 import 'package:marketplace/services/database.dart';
 
-class Product_Details extends StatefulWidget {
-  Product_Details({Key key, this.database, @required this.product})
+class Donation_Event_Details extends StatefulWidget {
+  Donation_Event_Details({Key key, this.database, @required this.donation})
       : super(key: key);
   final Database database;
-  final SingleProduct product;
+  final DonationEvent donation;
 
   static Future<void> show(BuildContext context,
-      {SingleProduct product}) async {
+      {DonationEvent donation}) async {
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => Product_Details(
-          product: product,
+        builder: (context) => Donation_Event_Details(
+         donation: donation,
         ),
         fullscreenDialog: false,
       ),
@@ -21,21 +21,25 @@ class Product_Details extends StatefulWidget {
   }
 
   @override
-  _Product_DetailsState createState() => _Product_DetailsState();
+  _Donation_Event_DetailsState createState() => _Donation_Event_DetailsState();
 }
 
-class _Product_DetailsState extends State<Product_Details> {
+class _Donation_Event_DetailsState extends State<Donation_Event_Details> {
   String _name;
-  int _price;
+  String _date;
   String _description;
+  String _owner;
+  int _contact;
 
   @override
   void initState() {
     super.initState();
-    if (widget.product != null) {
-      _name = widget.product.name;
-      _price = widget.product.price;
-      _description = widget.product.description;
+    if (widget.donation != null) {
+      _name = widget.donation.name;
+      _date = widget.donation.date;
+      _description = widget.donation.description;
+      _owner = widget.donation.owner;
+      _contact = widget.donation.contact;
     }
   }
 
@@ -44,7 +48,7 @@ class _Product_DetailsState extends State<Product_Details> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Product Name'),
+        title: Text('Event Name'),
       ),
       body: ListView(
         children: [
@@ -55,15 +59,16 @@ class _Product_DetailsState extends State<Product_Details> {
               child: Container(
                 color: Colors.white,
               ),
+              footer: Text(_name),
             ),
           ),
           Container(
             child: ListTile(
               title: Center(
                   child: Text(
-                _name,
-                style: TextStyle(fontSize: 40),
-              )),
+                    _name,
+                    style: TextStyle(fontSize: 40),
+                  )),
             ),
           ),
           Divider(),
@@ -74,7 +79,7 @@ class _Product_DetailsState extends State<Product_Details> {
                 flex: 2,
                 child: ListTile(
                   title: Text(
-                    '      Price:',
+                    '      Date:',
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
@@ -83,30 +88,7 @@ class _Product_DetailsState extends State<Product_Details> {
                 flex: 3,
                 child: ListTile(
                   title: Text(
-                    ' $_price',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Divider(),
-          Row(
-            children: <Widget>[
-              Expanded(
-                flex: 2,
-                child: ListTile(
-                  title: Text(
-                    '      Category:',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 3,
-                child: ListTile(
-                  title: Text(
-                    ' ',
+                    _date,
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
@@ -152,7 +134,7 @@ class _Product_DetailsState extends State<Product_Details> {
                 flex: 3,
                 child: ListTile(
                   title: Text(
-                    ' ',
+                    _owner,
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
@@ -175,7 +157,7 @@ class _Product_DetailsState extends State<Product_Details> {
                 flex: 3,
                 child: ListTile(
                   title: Text(
-                    ' ',
+                   '$_contact',
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
@@ -188,7 +170,3 @@ class _Product_DetailsState extends State<Product_Details> {
     );
   }
 }
-
-/*
-
-*/

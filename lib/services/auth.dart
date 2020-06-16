@@ -1,17 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:marketplace/models/user.dart';
 
-class User {
-  User(
-      {@required this.photoUrl,
-      @required this.displayName,
-      @required this.uid});
-
-  final String uid;
-  final String photoUrl;
-  final String displayName;
-}
 
 abstract class AuthBase {
   Stream<User> get onAuthStateChanged;
@@ -35,8 +25,11 @@ class Auth implements AuthBase {
       return null;
     }
     return User(
-        uid: user.uid, displayName: user.displayName, photoUrl: user.photoUrl);
+      phone: '9876543211',
+        uid: user.uid,name: user.displayName, photoUrl: user.photoUrl);
   }
+
+
 
   @override
   Stream<User> get onAuthStateChanged {
@@ -61,7 +54,6 @@ class Auth implements AuthBase {
       print("Done");
     });
     return _userFromFirebase(authResult.user);
-
   }
 
   Future<User> signInWithEmail(String email, String password) async {
@@ -101,14 +93,17 @@ class Auth implements AuthBase {
     });
   }
 
-  Future<DocumentSnapshot> getData() async{
+  Future<DocumentSnapshot> getData() async {
     var firebaseUser = await FirebaseAuth.instance.currentUser();
-    _firestoreAuth.collection("users").document(firebaseUser.uid).get().then((value){
+    _firestoreAuth
+        .collection("users")
+        .document(firebaseUser.uid)
+        .get()
+        .then((value) {
       print(value.data.toString());
       return value.data;
     });
   }
-
 
   Future<void> retriveImage(String imagePath) async {
     var firebaseUser = await _firebaseAuth.currentUser();
@@ -118,7 +113,6 @@ class Auth implements AuthBase {
       print("Done");
     });
   }
-
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();

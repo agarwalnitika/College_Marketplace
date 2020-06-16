@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:marketplace/common_widgets/avatar.dart';
 import 'package:marketplace/common_widgets/empty_content.dart';
+import 'package:marketplace/models/user.dart';
 import 'package:marketplace/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as Path;
@@ -121,9 +122,9 @@ class _MyAccountState extends State<MyAccount> {
         SizedBox(
           height: 12,
         ),
-        if (user.displayName != null)
+        if (user.name != null)
           Text(
-            user.displayName,
+            user.name,
             style: TextStyle(
               color: Colors.white,
             ),
