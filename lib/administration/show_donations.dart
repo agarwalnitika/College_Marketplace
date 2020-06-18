@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marketplace/common_widgets/allProduct_list_tile.dart';
+import 'package:marketplace/common_widgets/donation_list_tile.dart';
+import 'package:marketplace/models/donation.dart';
 import 'package:marketplace/models/user.dart';
 import 'package:marketplace/sell/add_edit_product.dart';
 import 'package:marketplace/common_widgets/empty_content.dart';
@@ -8,22 +10,24 @@ import 'package:marketplace/services/database.dart';
 import 'package:marketplace/theme/color.dart';
 import 'package:provider/provider.dart';
 
+import 'add_donations.dart';
 
-class MyProducts extends StatelessWidget {
-  MyProducts({Key key, @required this.database, this.product})
+
+class DonationAds extends StatelessWidget {
+  DonationAds({Key key, @required this.database, this.donation})
       : super(key: key);
   final Database database;
-  final SingleProduct product;
+  final DonationEvent donation;
 
   static Future<void> show(BuildContext context,
-      {SingleProduct product}) async {
+      {DonationEvent donation}) async {
     final database = Provider.of<Database>(context);
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => MyProducts(
+        builder: (context) => DonationAds(
 
           database: database,
-          product: product,
+         donation: donation,
         ),
         fullscreenDialog: true,
       ),
@@ -33,17 +37,18 @@ class MyProducts extends StatelessWidget {
 
 
 
-  Future<void> _delete(BuildContext context, SingleProduct product) async {
+  Future<void> _delete(BuildContext context, DonationEvent donation) async {
     try{
       final database = Provider.of<Database>(context);
-      await database.deleteProduct(product);
+      await database.deleteDonation(donation);
 
     }catch(e){
+      print(e);
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text('Product Deletion Failed'),
+              title: Text('Event Deletion Failed'),
               actions: <Widget>[
                 FlatButton(
                   child: Text('OK'),
@@ -65,10 +70,6 @@ class MyProducts extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => AddEditProduct.show(context),
-      ),
       body: _buildContents(context),
     );
   }
@@ -114,7 +115,7 @@ class MyProducts extends StatelessWidget {
                           Align(
                               alignment: Alignment.center,
                               child: Text(
-                                "My Products",
+                                "Donation Events",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 25,
@@ -147,22 +148,21 @@ class MyProducts extends StatelessWidget {
       children: <Widget>[
         _header(context),
         Flexible(
-          child: StreamBuilder<List<SingleProduct>>(
-            stream: database.myProductsStream(),
+          child: StreamBuilder<List<DonationEvent>>(
+            stream: database.allDonationsStream(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                final myProducts = snapshot.data;
-                if(myProducts.isNotEmpty) {
-                  final children = myProducts
-                      .map((product) => Dismissible(
-                    key: Key('product-${product.id}'),
+                final allDonations = snapshot.data;
+                if(allDonations.isNotEmpty) {
+                  final children = allDonations
+                      .map((donation) => Dismissible(
+                    key: Key('donation-${donation.id}'),
                     background: Container(color: Colors.red,),
                     direction: DismissDirection.endToStart,
-                    onDismissed: (direction) => _delete(context , product),
-                    child: AllProductTile(
-                      imageUrl:"assets/product.gif",
-                      product: product,
-                      onTap: () => AddEditProduct.show(context, product: product),
+                    onDismissed: (direction) => _delete(context , donation),
+                    child: DonationEventTile(
+                     donation: donation,
+                      onTap: () => AddEditDonation.show(context, donation: donation),
                     ),
                   ))
                       .toList();

@@ -31,7 +31,7 @@ Widget my_card (String my_img, String my_txt) {
     margin: EdgeInsets.only( top: 9.0),
     constraints: new BoxConstraints.expand(
       height: 150.0,
-      width: 80,
+      width: 600,
     ),
     alignment: Alignment.center,
     decoration: new BoxDecoration(

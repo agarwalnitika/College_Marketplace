@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:marketplace/authentication/sign_in.dart';
 import 'package:marketplace/drawer/drawer.dart';
 import 'package:marketplace/drawer/my_account.dart';
 import 'package:marketplace/screens/buy_page.dart';
 import 'package:marketplace/screens/donation_page.dart';
 import 'package:marketplace/screens/sell_page.dart';
+
 
 class Home extends StatefulWidget {
   @override
@@ -14,7 +14,10 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  int _selectedIndex = 0;
+ static int _selectedIndex = 0;
+
+
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -30,12 +33,13 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       drawer: SideBar(),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white70,
+        type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -51,7 +55,7 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt),
-            title: Text('Rent'),
+            title: Text('My Account'),
           ),
         ],
         currentIndex: _selectedIndex,

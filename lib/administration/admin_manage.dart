@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:marketplace/administration/category_list.dart';
-import 'package:marketplace/screens/donation_page.dart';
+import 'package:marketplace/authentication/email_sign_in.dart';
 import 'package:marketplace/screens/sell_page.dart';
 import 'package:marketplace/sell/add_edit_product.dart';
-import 'package:marketplace/services/auth.dart';
+import 'package:marketplace/services/database.dart';
+import 'package:marketplace/theme/color.dart';
 import 'package:provider/provider.dart';
 import 'add_category.dart';
 import 'add_donations.dart';
-import 'category_list.dart';
 
 
 
@@ -17,14 +16,72 @@ class AdminPage extends StatelessWidget {
   final _formkey = GlobalKey<FormState>();
   String _name;
 
-  Future<void> _signOut(BuildContext context) async {
-    final auth = Provider.of<AuthBase>(context);
-    try {
-      await auth.signOut();
-    } catch (e) {
-      print('${e.toString()}');
-    }
+  Widget _header(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(0), bottomRight: Radius.circular(0)),
+      child: Container(
+          height: 80,
+          width: width,
+          decoration: BoxDecoration(
+            color: LightColor.brighter,
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            alignment: Alignment.center,
+            children: <Widget>[
+              Positioned(
+                top: 10,
+                right: -120,
+                child: _circularContainer(200, LightColor.lightBlue),
+              ),
+              Positioned(
+                  top: -60,
+                  left: -65,
+                  child: _circularContainer(width * .5, LightColor.darkBlue)),
+              Positioned(
+                  top: -230,
+                  right: -30,
+                  child: _circularContainer(width * .7, Colors.transparent,
+                      borderColor: Colors.white38)),
+              Positioned(
+                  top: 40,
+                  left: 0,
+                  child: Container(
+                      width: width,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Stack(
+                        children: <Widget>[
+                          Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Admin Page",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w500),
+                              ))
+                        ],
+                      ))),
+            ],
+          )),
+    );
   }
+
+  Widget _circularContainer(double height, Color color,
+      {Color borderColor = Colors.transparent, double borderWidth = 2}) {
+    return Container(
+      height: height,
+      width: height,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        border: Border.all(color: borderColor, width: borderWidth),
+      ),
+    );
+  }
+
 
   bool _validateAndSaveForm() {
     final form = _formkey.currentState;
@@ -38,36 +95,16 @@ class AdminPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final database = Provider.of<Database>(context);
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text('Admin Page'),
-        actions: <Widget>[
-          FlatButton(
-            child: Text(
-              'Logout',
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.white,
-              ),
-            ),
-            onPressed: () => _signOut(context),
-          ),
-        ],
-      ),
-      body: ListView(
+      body: Column(
         children: <Widget>[
+          _header(context),
           Divider(),
           ListTile(
             leading: Icon(Icons.add_circle),
             title: Text("Add Category"),
-            onTap: () => AddCategory.show(context),
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.category),
-            title: Text("Category List"),
-            onTap: () => CategoryList.show(context),
+            onTap: () => AddEditCategory.show(context),
           ),
           Divider(),
           ListTile(
@@ -78,33 +115,11 @@ class AdminPage extends StatelessWidget {
           Divider(),
           ListTile(
             leading: Icon(Icons.category),
-            title: Text("Products List"),
-            onTap: () => CategoryList.show(context),
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.category),
-            title: Text("All Products"),
-            onTap: () => MyProducts.show(context),
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.category),
             title: Text("Add Donation"),
             onTap: () =>  AddEditDonation.show(context),
           ),
           Divider(),
-          ListTile(
-            leading: Icon(Icons.category),
-            title: Text("Donation List"),
-            onTap: () => CategoryList.show(context),
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.category),
-            title: Text("All Donations"),
-            onTap: () => {},
-          ),
+
         ],
       ),
     );

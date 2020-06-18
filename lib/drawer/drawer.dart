@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marketplace/drawer/about.dart';
+import 'package:marketplace/theme/color.dart';
 
 
 class SideBar extends StatefulWidget {
@@ -19,19 +20,11 @@ class _SideBarState extends State<SideBar> {
           gradient: LinearGradient(
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
-              colors: [Colors.lightBlue, Colors.indigo])),
+              colors: [LightColor.darkBlue, LightColor.brighter])),
       child: ListView(
         children: <Widget>[
           DrawerHeader(
-            child: Center(
-              child: new Text(
-                "Nitika Agarwal",
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            decoration: new BoxDecoration(color: Colors.white),
+            decoration: new BoxDecoration(color: Colors.grey[200]),
           ),
 
 
@@ -124,10 +117,6 @@ class _SideBarState extends State<SideBar> {
             ),
             onTap: () {
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => About()),
-              );
             },
           ),
 

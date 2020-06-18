@@ -18,16 +18,21 @@ class SingleProduct{
     final int price = data['price'];
     final String description = data['description'];
     final String imageUrl = data['imageUrl'];
+    final String owner = data['owner'];
+    final int contact = data['contact'];
     return SingleProduct(
       id: documentID,
       imageUrl: imageUrl,
       name: name,
       price: price,
       description: description,
+      owner: owner,
+      contact: contact,
+
     );
   }
 
-  Map<String, dynamic> toMap({String owner , String contact}) {
+  Map<String, dynamic> toMap() {
     return {
       'imageUrl': imageUrl,
       'name': name,

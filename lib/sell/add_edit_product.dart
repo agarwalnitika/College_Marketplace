@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:marketplace/models/product.dart';
 import 'package:marketplace/services/database.dart';
+import 'package:marketplace/theme/color.dart';
 import 'package:provider/provider.dart';
 
 class AddEditProduct extends StatefulWidget {
@@ -35,8 +36,8 @@ class _AddEditProductState extends State<AddEditProduct> {
   int _price;
   String _description;
   File _image;
-  String owner;
-  String contact;
+  String _owner;
+  int _contact;
 
   @override
   void initState() {
@@ -45,6 +46,8 @@ class _AddEditProductState extends State<AddEditProduct> {
       _name = widget.product.name;
       _price = widget.product.price;
       _description = widget.product.description;
+      _owner = widget.product.owner;
+      _contact = widget.product.contact;
     }
   }
 
@@ -70,8 +73,9 @@ class _AddEditProductState extends State<AddEditProduct> {
       try {
         final id = widget.product?.id ?? documentIdFromCurrentDate();
         final product = SingleProduct(
-            id: id, name: _name, price: _price, description: _description ,);
-        await widget.database.create_edit_Product(product ,owner: owner , contact: contact);
+          imageUrl: null,
+            id: id, name: _name, price: _price, description: _description ,owner: _owner,contact: _contact);
+        await widget.database.create_edit_Product(product);
         Navigator.of(context).pop();
       } catch (e) {
         showDialog(
@@ -96,20 +100,6 @@ class _AddEditProductState extends State<AddEditProduct> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 2.0,
-        title: Text(widget.product == null ? 'New Product' : 'Edit Product'),
-        actions: <Widget>[
-          FlatButton(
-            child: Text(
-              'Save',
-              style: TextStyle(fontSize: 18, color: Colors.white),
-            ),
-            onPressed: _submit,
-          )
-        ],
-      ),
       body: _buildContents(),
       backgroundColor: Colors.grey[200],
     );
@@ -117,14 +107,19 @@ class _AddEditProductState extends State<AddEditProduct> {
 
   Widget _buildContents() {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          child: Padding(
+      child: Column(
+        children: <Widget>[
+          _header(context),
+          Padding(
             padding: const EdgeInsets.all(16.0),
-            child: _buildForm(),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _buildForm(),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -141,7 +136,7 @@ class _AddEditProductState extends State<AddEditProduct> {
 
   List<Widget> _buildFormChildren() {
     return [
-      Container(
+     /* Container(
         height: 150,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -152,7 +147,7 @@ class _AddEditProductState extends State<AddEditProduct> {
             child: _displayChild(),
           ),
         ),
-      ),
+      ),*/
       TextFormField(
         initialValue: _name,
         decoration: InputDecoration(labelText: 'Product Name'),
@@ -172,6 +167,21 @@ class _AddEditProductState extends State<AddEditProduct> {
         onSaved: (value) => _description = value,
         validator: (value) =>
             value.isNotEmpty ? null : 'Description can\'t be empty',
+      ),
+      TextFormField(
+        initialValue: _owner,
+        decoration: InputDecoration(labelText: 'Owner Name'),
+        onSaved: (value) => _owner = value,
+        validator: (value) =>
+        value.isNotEmpty ? null : 'Name can\'t be empty',
+      ),
+      TextFormField(
+        initialValue: _contact!=null ? '$_contact' : null,
+        decoration: InputDecoration(labelText: 'Contact'),
+        onSaved: (value) => _contact = int.tryParse(value) ?? 0,
+        validator: (value) =>
+        value.isNotEmpty ? null : 'Contact can\'t be empty',
+        keyboardType: TextInputType.number,
       ),
     ];
   }
@@ -195,5 +205,98 @@ class _AddEditProductState extends State<AddEditProduct> {
         ),
       );
     }
+  }
+
+
+  Widget _header(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(0), bottomRight: Radius.circular(0)),
+      child: Container(
+          height: 90,
+          width: width,
+          decoration: BoxDecoration(
+            color: LightColor.brighter,
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+
+            children: <Widget>[
+
+              Positioned(
+                top: 40,
+                left: 50,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back_ios,color: Colors.white,),
+                  onPressed: null,
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: -120,
+                child: _circularContainer(200, LightColor.lightBlue),
+              ),
+              Positioned(
+                  top: -60,
+                  left: -65,
+                  child: _circularContainer(width * .5, LightColor.darkBlue)),
+              Positioned(
+                  top: -230,
+                  right: -30,
+                  child: _circularContainer(width * .7, Colors.transparent,
+                      borderColor: Colors.white38)),
+              Positioned(
+                  top: 35,
+                  left: 0,
+                  child: Container(
+                      width: width,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Stack(
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.arrow_back_ios,color: Colors.white,),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                          Align(
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top:9.0),
+                                child: Text(
+                                  widget.product == null ? 'New Product' : 'Edit Product',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              )),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: FlatButton(
+                              child: Text(
+                                'Save',
+                                style: TextStyle(fontSize: 18, color: Colors.white),
+                              ),
+                              onPressed: _submit,
+                            ),
+                          ),
+                        ],
+                      ))),
+            ],
+          )),
+    );
+  }
+
+  Widget _circularContainer(double height, Color color,
+      {Color borderColor = Colors.transparent, double borderWidth = 2}) {
+    return Container(
+      height: height,
+      width: height,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        border: Border.all(color: borderColor, width: borderWidth),
+      ),
+    );
   }
 }

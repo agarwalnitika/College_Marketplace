@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:marketplace/administration/admin_manage.dart';
-
 import 'package:marketplace/services/auth.dart';
 import 'package:marketplace/services/database.dart';
 import 'package:provider/provider.dart';
 import 'administration/admin_home.dart';
 import 'authentication/sign_in.dart';
 import 'package:marketplace/home_page.dart';
-
 import 'models/user.dart';
 
 class LandingPage extends StatelessWidget {
@@ -23,7 +20,7 @@ class LandingPage extends StatelessWidget {
             User user = snapshot.data;
             if (user == null) {
               return SignInPage();
-            } else if (user.uid == 'LimdE8Laj6UlYbJ4fc4TQfhPGv03') {
+            } else if (user.uid == 'YDGTE24IGeasZJSgQdZugN52cpO2') {
               return Provider<User>.value(
                 value: user,
                 child: Provider<Database>(

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:marketplace/models/product.dart';
 
 class ProductTile extends StatelessWidget {
-  const ProductTile({Key key, @required this.product, this.onTap , this.height , this.width})
+  const ProductTile({Key key, @required this.product, this.onTap , this.height , this.width , @required this.imageUrl})
       : super(key: key);
   final double height;
   final double width;
   final SingleProduct product;
   final VoidCallback onTap;
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class ProductTile extends StatelessWidget {
           width: width,
           child: GestureDetector(
             onTap: onTap,
-              child: my_card ('assets/display1.jpg', product.name)),
+              child: my_card (imageUrl, product.name)),
         ),
       ],
     );

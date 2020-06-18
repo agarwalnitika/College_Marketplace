@@ -44,10 +44,10 @@ class TypingTextAnimationState extends State<TypingTextAnimation>
     ThemeData theme = Theme.of(context);
     TextStyle textStyle = theme.textTheme.title.copyWith(
       color: Colors.red,
-      fontSize: 35.0,
+      fontSize: 20.0,
     );
     return  new Container(
-      height: 35,
+      height: 20,
       width: 350,
       margin: new EdgeInsets.symmetric(vertical: 50.0, horizontal: 10.0),
       child: _characterCount == null

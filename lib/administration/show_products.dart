@@ -9,8 +9,8 @@ import 'package:marketplace/theme/color.dart';
 import 'package:provider/provider.dart';
 
 
-class MyProducts extends StatelessWidget {
-  MyProducts({Key key, @required this.database, this.product})
+class ShowProducts extends StatelessWidget {
+  ShowProducts({Key key, @required this.database, this.product})
       : super(key: key);
   final Database database;
   final SingleProduct product;
@@ -20,7 +20,7 @@ class MyProducts extends StatelessWidget {
     final database = Provider.of<Database>(context);
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => MyProducts(
+        builder: (context) => ShowProducts(
 
           database: database,
           product: product,
@@ -114,7 +114,7 @@ class MyProducts extends StatelessWidget {
                           Align(
                               alignment: Alignment.center,
                               child: Text(
-                                "My Products",
+                                "Manage Products",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 25,
@@ -146,38 +146,104 @@ class MyProducts extends StatelessWidget {
     return Column(
       children: <Widget>[
         _header(context),
-        Flexible(
-          child: StreamBuilder<List<SingleProduct>>(
-            stream: database.myProductsStream(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final myProducts = snapshot.data;
-                if(myProducts.isNotEmpty) {
-                  final children = myProducts
-                      .map((product) => Dismissible(
-                    key: Key('product-${product.id}'),
-                    background: Container(color: Colors.red,),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (direction) => _delete(context , product),
-                    child: AllProductTile(
-                      imageUrl:"assets/product.gif",
-                      product: product,
-                      onTap: () => AddEditProduct.show(context, product: product),
-                    ),
-                  ))
-                      .toList();
-                  return ListView(children: children);
-                }
-                return EmptyContent();
-              }
-              if (snapshot.hasError) {
-                return EmptyContent(
-                  title:'Something went wrong' ,
-                  message: 'Can\'t load items right now',
-                );
-              }
-              return Center(child: CircularProgressIndicator());
-            },
+        Padding(
+          padding: const EdgeInsets.only(top:30.0),
+          child: Text(
+            'My Products',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+        ),
+        Container(
+          height: 200,
+          child: Column(
+            children: <Widget>[
+              Flexible(
+                child: StreamBuilder<List<SingleProduct>>(
+                  stream: database.myProductsStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final myProducts = snapshot.data;
+                      if(myProducts.isNotEmpty) {
+                        final children = myProducts
+                            .map((product) => Dismissible(
+                          key: Key('product-${product.id}'),
+                          background: Container(color: Colors.red,),
+                          direction: DismissDirection.endToStart,
+                          onDismissed: (direction) => _delete(context , product),
+                          child: AllProductTile(
+                            imageUrl:"assets/product.gif",
+                            product: product,
+                            onTap: () => AddEditProduct.show(context, product: product),
+                          ),
+                        ))
+                            .toList();
+                        return ListView(children: children);
+                      }
+                      return EmptyContent();
+                    }
+                    if (snapshot.hasError) {
+                      return EmptyContent(
+                        title:'Something went wrong' ,
+                        message: 'Can\'t load items right now',
+                      );
+                    }
+                    return Center(child: CircularProgressIndicator());
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top:30.0),
+          child: Text(
+            'All Products',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+        ),
+        Container(
+          height: 250,
+          child: Column(
+            children: <Widget>[
+              Flexible(
+                child: StreamBuilder<List<SingleProduct>>(
+                  stream: database.allProductsStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final myProducts = snapshot.data;
+                      if(myProducts.isNotEmpty) {
+                        final children = myProducts
+                            .map((product) => Dismissible(
+                          key: Key('product-${product.id}'),
+                          background: Container(color: Colors.red,),
+                          direction: DismissDirection.endToStart,
+                          onDismissed: (direction) => _delete(context , product),
+                          child: AllProductTile(
+                            imageUrl:"assets/product.gif",
+                            product: product,
+                            onTap: () => AddEditProduct.show(context, product: product),
+                          ),
+                        ))
+                            .toList();
+                        return ListView(children: children);
+                      }
+                      return EmptyContent();
+                    }
+                    if (snapshot.hasError) {
+                      return EmptyContent(
+                        title:'Something went wrong' ,
+                        message: 'Can\'t load items right now',
+                      );
+                    }
+                    return Center(child: CircularProgressIndicator());
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ],

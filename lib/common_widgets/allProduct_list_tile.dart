@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:marketplace/models/product.dart';
 
 class AllProductTile extends StatelessWidget {
-  const AllProductTile({Key key, @required this.product, this.onTap , this.height , this.width})
+  const AllProductTile({Key key, @required this.product, this.onTap , this.height , this.width , @required this.imageUrl})
       : super(key: key);
   final double height;
   final double width;
   final SingleProduct product;
   final VoidCallback onTap;
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class AllProductTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             ListTile(
-              leading: Image.asset('assets/display1.jpg',
+              leading: Image.asset('$imageUrl',
                 width: 100,
                 height: 80,),
               title: Text(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:marketplace/models/donation.dart';
 import 'package:marketplace/services/database.dart';
+import 'package:marketplace/theme/color.dart';
 import 'package:provider/provider.dart';
 
 class AddEditDonation extends StatefulWidget {
@@ -100,35 +101,119 @@ class _AddEditDonationState extends State<AddEditDonation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 2.0,
-        title: Text(widget.donation == null ? 'New Donation Event' : 'Edit Event'),
-        actions: <Widget>[
-          FlatButton(
-            child: Text(
-              'Save',
-              style: TextStyle(fontSize: 18, color: Colors.white),
-            ),
-            onPressed: _submit,
-          )
-        ],
-      ),
       body: _buildContents(),
       backgroundColor: Colors.grey[200],
     );
   }
 
+  Widget _header(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(0), bottomRight: Radius.circular(0)),
+      child: Container(
+          height: 90,
+          width: width,
+          decoration: BoxDecoration(
+            color: LightColor.brighter,
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+
+            children: <Widget>[
+
+              Positioned(
+                top: 40,
+                left: 50,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back_ios,color: Colors.white,),
+                  onPressed: null,
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: -120,
+                child: _circularContainer(200, LightColor.lightBlue),
+              ),
+              Positioned(
+                  top: -60,
+                  left: -65,
+                  child: _circularContainer(width * .5, LightColor.darkBlue)),
+              Positioned(
+                  top: -230,
+                  right: -30,
+                  child: _circularContainer(width * .7, Colors.transparent,
+                      borderColor: Colors.white38)),
+              Positioned(
+                  top: 35,
+                  left: 0,
+                  child: Container(
+                      width: width,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Stack(
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.arrow_back_ios,color: Colors.white,),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                          Align(
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top:9.0),
+                                child: Text(
+                                   widget.donation == null ? 'New Event' : 'Edit Event',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              )),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: FlatButton(
+                              child: Text(
+                                'Save',
+                                style: TextStyle(fontSize: 18, color: Colors.white),
+                              ),
+                              onPressed: _submit,
+                            ),
+                          )
+                        ],
+                      ))),
+            ],
+          )),
+    );
+  }
+
+  Widget _circularContainer(double height, Color color,
+      {Color borderColor = Colors.transparent, double borderWidth = 2}) {
+    return Container(
+      height: height,
+      width: height,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        border: Border.all(color: borderColor, width: borderWidth),
+      ),
+    );
+  }
+
+
   Widget _buildContents() {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          child: Padding(
+      child: Column(
+        children: <Widget>[
+          _header(context),
+          Padding(
             padding: const EdgeInsets.all(16.0),
-            child: _buildForm(),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _buildForm(),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -145,7 +230,7 @@ class _AddEditDonationState extends State<AddEditDonation> {
 
   List<Widget> _buildFormChildren() {
     return [
-      Container(
+     /* Container(
         height: 150,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -156,7 +241,7 @@ class _AddEditDonationState extends State<AddEditDonation> {
             child: _displayChild(),
           ),
         ),
-      ),
+      ),*/
       TextFormField(
         initialValue: _name,
         decoration: InputDecoration(labelText: 'Event Name'),
@@ -214,4 +299,10 @@ class _AddEditDonationState extends State<AddEditDonation> {
       );
     }
   }
+
+
+
 }
+
+
+

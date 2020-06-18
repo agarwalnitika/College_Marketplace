@@ -6,13 +6,13 @@ import 'package:marketplace/services/api_path.dart';
 import 'package:marketplace/services/firestore_service.dart';
 import 'package:meta/meta.dart';
 
-import 'auth.dart';
-
 abstract class Database {
-  Future<void> create_edit_Product(SingleProduct productDetails, {String  owner , String contact});
-  Future<void> addCategory(Category categoryName);
+  Future<void> create_edit_Product(SingleProduct productDetails);
+  Future<void> create_edit_Category(Category categoryName);
   Future<void> create_edit_Donation(DonationEvent donationDetails);
   Future<void> deleteProduct(SingleProduct productDetails);
+  Future<void> deleteCategory(Category category);
+  Future<void> deleteDonation(DonationEvent donationDetails);
   Stream<List<SingleProduct>> myProductsStream();
   Stream<List<SingleProduct>> allProductsStream();
   Stream<List<Category>> allCategoriesStream();
@@ -29,33 +29,31 @@ class FirestoreDatabase implements Database {
 
 
 
-  Future<void> create_edit_Product(SingleProduct productDetails, {String  owner , String contact}) async {
+  Future<void> create_edit_Product(SingleProduct productDetails) async {
 
     await _service.setData(
       path1: APIPath.product_add1(uid, productDetails.id),
       path2: APIPath.product_add2(productDetails.id),
-      data: productDetails.toMap(owner: owner, contact: contact),
+      data: productDetails.toMap(),
     );
   }
 
 
   Future<void> create_edit_Donation(DonationEvent donationDetails) async {
 
-  var id  = documentIdFromCurrentDate();
     await _service.setData(
-      path1: APIPath.donation_add(id),
-      path2: APIPath.donation_add(id),
+      path1: APIPath.donation_add(donationDetails.id),
+      path2: APIPath.donation_add(donationDetails.id),
       data: donationDetails.toMap(),
     );
   }
 
 
-  Future<void> addCategory(Category categoryName) async {
-    var id  = documentIdFromCurrentDate();
+  Future<void> create_edit_Category(Category categoryName) async {
 
     await _service.setData(
-      path1: APIPath.category_add(id),
-      path2: APIPath.category_add(id),
+      path1: APIPath.category_add(categoryName.id),
+      path2: APIPath.category_add(categoryName.id),
       data: categoryName.toMap(),
     );
 
@@ -66,6 +64,20 @@ class FirestoreDatabase implements Database {
         path1: APIPath.product_add1(uid, productDetails.id),
         path2: APIPath.product_add2(productDetails.id),
       );
+
+
+  Future<void> deleteDonation(DonationEvent donationDetails) async =>
+      await _service.deleteData(
+        path1: APIPath.donation_add(donationDetails.id),
+        path2: APIPath.donation_add(donationDetails.id),
+      );
+
+  Future<void> deleteCategory(Category category) async =>
+      await _service.deleteData(
+        path1: APIPath.category_add(category.id),
+        path2: APIPath.category_add(category.id),
+      );
+
 
 
   Stream<List<User>> myUserInfo() => _service.collectionStream(

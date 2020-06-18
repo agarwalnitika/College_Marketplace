@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:marketplace/authentication/validators.dart';
 import 'package:marketplace/common_widgets/form_submit_button.dart';
 import 'package:marketplace/services/auth.dart';
+import 'package:marketplace/theme/color.dart';
 import 'package:provider/provider.dart';
 
 class CreateAccount extends StatefulWidget {
@@ -9,22 +10,106 @@ class CreateAccount extends StatefulWidget {
   _CreateAccountState createState() => _CreateAccountState();
 }
 
+
+Widget _header(BuildContext context) {
+  var width = MediaQuery.of(context).size.width;
+  return ClipRRect(
+    borderRadius: BorderRadius.only(
+        bottomLeft: Radius.circular(0), bottomRight: Radius.circular(0)),
+    child: Container(
+        height: 90,
+        width: width,
+        decoration: BoxDecoration(
+          color: LightColor.brighter,
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+
+          children: <Widget>[
+
+            Positioned(
+              top: 40,
+              left: 50,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_ios,color: Colors.white,),
+                onPressed: null,
+              ),
+            ),
+            Positioned(
+              top: 10,
+              right: -120,
+              child: _circularContainer(200, LightColor.lightBlue),
+            ),
+            Positioned(
+                top: -60,
+                left: -65,
+                child: _circularContainer(width * .5, LightColor.darkBlue)),
+            Positioned(
+                top: -230,
+                right: -30,
+                child: _circularContainer(width * .7, Colors.transparent,
+                    borderColor: Colors.white38)),
+            Positioned(
+                top: 35,
+                left: 0,
+                child: Container(
+                    width: width,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Stack(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.arrow_back_ios,color: Colors.white,),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        Align(
+                            alignment: Alignment.center,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top:9.0),
+                              child: Text(
+                                "Create Account",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ))
+                      ],
+                    ))),
+          ],
+        )),
+  );
+}
+
+Widget _circularContainer(double height, Color color,
+    {Color borderColor = Colors.transparent, double borderWidth = 2}) {
+  return Container(
+    height: height,
+    width: height,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: color,
+      border: Border.all(color: borderColor, width: borderWidth),
+    ),
+  );
+}
+
+
 class _CreateAccountState extends State<CreateAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 2.0,
-        centerTitle: true,
-        title: Text('Create Account'),
-      ),
       backgroundColor: Colors.grey[200],
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            child: AccountForm(),
-          ),
+        child: Column(
+          children: <Widget>[
+            _header(context),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: AccountForm(),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -149,9 +234,12 @@ class _AccountFormState extends State<AccountForm> {
       SizedBox(
         height: 8,
       ),
-      FormSubmitButton(
-        text: 'Create Account',
-        onPressed: submitEnabled ? _submit : null,
+      Container(
+        color: Colors.grey,
+        child: FormSubmitButton(
+          text: 'Create Account',
+          onPressed: submitEnabled ? _submit : null,
+        ),
       )
     ];
   }
