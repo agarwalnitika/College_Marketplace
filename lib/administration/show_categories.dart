@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marketplace/administration/add_category.dart';
 import 'package:marketplace/common_widgets/allProduct_list_tile.dart';
 import 'package:marketplace/common_widgets/category_list_tile.dart';
 import 'package:marketplace/common_widgets/quad_clipper.dart';
@@ -70,7 +71,7 @@ class ShowCategories extends StatelessWidget {
       backgroundColor: Colors.grey[200],
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => AddEditProduct.show(context),
+        onPressed: () => AddEditCategory.show(context),
       ),
       body: _buildContents(context),
     );

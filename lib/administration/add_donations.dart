@@ -230,18 +230,6 @@ class _AddEditDonationState extends State<AddEditDonation> {
 
   List<Widget> _buildFormChildren() {
     return [
-     /* Container(
-        height: 150,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: OutlineButton(
-            borderSide:
-            BorderSide(color: Colors.grey.withOpacity(0.7), width: 2.5),
-            onPressed: chooseFile,
-            child: _displayChild(),
-          ),
-        ),
-      ),*/
       TextFormField(
         initialValue: _name,
         decoration: InputDecoration(labelText: 'Event Name'),

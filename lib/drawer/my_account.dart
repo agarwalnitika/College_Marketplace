@@ -53,7 +53,7 @@ class _MyAccountState extends State<MyAccount> {
     if (_image != null) await uploadingImages();
     print('uploaded image');
     Firestore.instance.collection('users').document(user.uid).updateData({
-      'photoUrl': '${_uploadedFileURL}',
+      'photoUrl': _uploadedFileURL ,
     });
     print('uploadedggimage');
   }
@@ -67,20 +67,6 @@ class _MyAccountState extends State<MyAccount> {
     }
   }
 
-  Future<void> uploadFile() async {
-    final auth = Provider.of<AuthBase>(context);
-    await auth.uploadImage(_image.path);
-    StorageReference storageReference = FirebaseStorage.instance
-        .ref()
-        .child('users/${Path.basename(_image.path)}}');
-    StorageUploadTask uploadTask = storageReference.putFile(_image);
-    await uploadTask.onComplete;
-    storageReference.getDownloadURL().then((fileURL) {
-      setState(() {
-        _uploadedFileURL = fileURL;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -188,13 +174,13 @@ class _MyAccountState extends State<MyAccount> {
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Stack(
                         children: <Widget>[
-                          IconButton(
+                          /*IconButton(
                             icon: Icon(
                               Icons.arrow_back_ios,
                               color: Colors.white,
                             ),
                             onPressed: () => Navigator.of(context).pop(),
-                          ),
+                          ),*/
                           Align(
                             alignment: Alignment.center,
                             child: Padding(

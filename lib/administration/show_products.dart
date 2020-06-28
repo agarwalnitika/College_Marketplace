@@ -21,7 +21,6 @@ class ShowProducts extends StatelessWidget {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ShowProducts(
-
           database: database,
           product: product,
         ),
