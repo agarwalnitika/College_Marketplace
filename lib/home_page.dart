@@ -5,7 +5,6 @@ import 'package:marketplace/screens/buy_page.dart';
 import 'package:marketplace/screens/donation_page.dart';
 import 'package:marketplace/screens/sell_page.dart';
 
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -14,9 +13,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
- static int _selectedIndex = 0;
-
-
+  static int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -33,7 +30,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       drawer: SideBar(),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),

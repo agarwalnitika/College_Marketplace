@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:path/path.dart' as Path;
 
 class MyAccount extends StatefulWidget {
-
-
   @override
   _MyAccountState createState() => _MyAccountState();
 }
@@ -21,21 +20,48 @@ class MyAccount extends StatefulWidget {
 class _MyAccountState extends State<MyAccount> {
   File _image;
   String _uploadedFileURL;
+  int progress = 0;
+  var name;
+  var _imageString;
 
-  Future<void> chooseFile() async {
+  Future<void> chooseFile(User user) async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
       setState(() {
         _image = image;
       });
     });
+    addImage(user);
+  }
+
+  Future uploadingImages() async {
+    final StorageReference mStorageRef = FirebaseStorage.instance
+        .ref()
+        .child('images/$name/${DateTime.now()}.png');
+    final StorageUploadTask uploadTask = mStorageRef.putFile(_image);
+    setState(() {
+      progress = 1;
+    });
+    final StorageTaskSnapshot uploadComplete = await uploadTask.onComplete;
+    _uploadedFileURL = await mStorageRef.getDownloadURL();
+    setState(() {
+      _uploadedFileURL = _uploadedFileURL as String;
+      progress = 0;
+    });
+  }
+
+  void addImage(User user) async {
+    if (_image != null) await uploadingImages();
+    print('uploaded image');
+    Firestore.instance.collection('users').document(user.uid).updateData({
+      'photoUrl': '${_uploadedFileURL}',
+    });
+    print('uploadedggimage');
   }
 
   Future<void> _signOut(BuildContext context) async {
-
     final auth = Provider.of<AuthBase>(context);
     try {
       await auth.signOut();
-
     } catch (e) {
       print('${e.toString()}');
     }
@@ -60,7 +86,6 @@ class _MyAccountState extends State<MyAccount> {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     return Scaffold(
-
       body: Stack(
         children: <Widget>[
           _header(context),
@@ -69,7 +94,6 @@ class _MyAccountState extends State<MyAccount> {
               SizedBox(
                 height: 60,
               ),
-
               Container(
                 height: 600,
                 child: Column(
@@ -86,12 +110,14 @@ class _MyAccountState extends State<MyAccount> {
                             }
                             var userDocument = snapshot.data;
                             print(userDocument);
+                            name = userDocument['name'];
+                            _imageString = userDocument['photoUrl'];
                             return ListView(
                               children: <Widget>[
                                 SizedBox(
                                   height: 100,
                                 ),
-                                checkUser(userDocument , user),
+                                checkUser(userDocument, user),
                               ],
                             );
                           }),
@@ -120,7 +146,6 @@ class _MyAccountState extends State<MyAccount> {
               ),
             ),
           ),
-
         ],
       ),
     );
@@ -217,44 +242,42 @@ class _MyAccountState extends State<MyAccount> {
     );
   }
 
-  Widget _buildUserInfo(User user) {
-    return Column(
-      children: <Widget>[
-        GestureDetector(
-          onTap: _image == null ? chooseFile : uploadFile,
-          child: Container(
-            child: Avatar(
-              photoUrl: _image != null ? _uploadedFileURL : user.photoUrl,
-              radius: 50,
-            ),
-          ),
+  Widget _buildUserImage(
+      DocumentSnapshot userDocument, User user, BuildContext context) {
+    return GestureDetector(
+      onTap: (progress == 0)
+          ? () {
+              chooseFile(user);
+            }
+          : () {},
+      child: Container(
+        child: CircleAvatar(
+          radius: 50,
+          backgroundColor: Colors.black12,
+          backgroundImage: _image != null
+              ? FileImage(_image)
+              : CachedNetworkImageProvider(
+                  userDocument['photoUrl'] == null
+                      ? 'https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-vector-camera-icon-png-image_696326.jpg'
+                      : _imageString,
+                ),
         ),
-        SizedBox(
-          height: 12,
-        ),
-        if (user.name != null)
-          Text(
-            user.name,
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-      ],
+      ),
     );
   }
 
-  checkUser(DocumentSnapshot userDocument,User user) {
+  checkUser(DocumentSnapshot userDocument, User user) {
     if (userDocument['email'] == null) {
       return Column(
         children: <Widget>[
           SizedBox(
-            height: 70,
+            height: 120,
           ),
-          _buildUserInfo(user),
           Container(
             height: 100,
             child: Center(
               child: EmptyContent(
+                color: Colors.white,
                 title: "No Account Found :(",
                 message: 'Register yourself to get started',
               ),
@@ -262,71 +285,10 @@ class _MyAccountState extends State<MyAccount> {
           ),
         ],
       );
-    } else if  (userDocument['name'] == null) {
-
-
+    } else {
       return Column(
         children: <Widget>[
-          _buildUserInfo(user),
-          Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [LightColor.brighter, LightColor.darkBlue])),
-            child: ListTile(
-              onTap: () {},
-              title: Center(
-                  child: Text(
-                    "Nitika Agarwal",
-                    style: TextStyle(
-                      fontFamily: 'Pacifico',
-                      fontSize: 40.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-            ),
-          ),
-          Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.phone,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  userDocument["phone"],
-                  style: TextStyle(
-                    color: Colors.teal.shade900,
-                    fontFamily: 'Source Sans Pro',
-                    fontSize: 20.0,
-                  ),
-                ),
-              )),
-
-          Card(
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.email,
-                  color: Colors.teal,
-                ),
-                title: Text(
-                  userDocument["email"],
-                  style: TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.teal.shade900,
-                      fontFamily: 'Source Sans Pro'),
-                ),
-              ))
-        ],
-      );
-
-    }else {
-      return Column(
-        children: <Widget>[
-          _buildUserInfo(user),
+          _buildUserImage(userDocument, user, context),
           Container(
             decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -338,12 +300,12 @@ class _MyAccountState extends State<MyAccount> {
               title: Center(
                   child: Text(
                 userDocument["name"],
-                    style: TextStyle(
-                      fontFamily: 'Pacifico',
-                      fontSize: 40.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: TextStyle(
+                  fontFamily: 'Pacifico',
+                  fontSize: 40.0,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               )),
             ),
           ),
@@ -363,7 +325,6 @@ class _MyAccountState extends State<MyAccount> {
                   ),
                 ),
               )),
-
           Card(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
               child: ListTile(
@@ -384,4 +345,3 @@ class _MyAccountState extends State<MyAccount> {
     }
   }
 }
-
