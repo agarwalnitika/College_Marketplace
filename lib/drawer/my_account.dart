@@ -21,7 +21,7 @@ class _MyAccountState extends State<MyAccount> {
   File _image;
   String _uploadedFileURL;
   int progress = 0;
-  var name;
+  var id;
   var _imageString;
 
   Future<void> chooseFile(User user) async {
@@ -36,7 +36,7 @@ class _MyAccountState extends State<MyAccount> {
   Future uploadingImages() async {
     final StorageReference mStorageRef = FirebaseStorage.instance
         .ref()
-        .child('images/$name/${DateTime.now()}.png');
+        .child('images/$id/${DateTime.now()}.png');
     final StorageUploadTask uploadTask = mStorageRef.putFile(_image);
     setState(() {
       progress = 1;
@@ -110,7 +110,7 @@ class _MyAccountState extends State<MyAccount> {
                             }
                             var userDocument = snapshot.data;
                             print(userDocument);
-                            name = userDocument['name'];
+                            id = user.uid;
                             _imageString = userDocument['photoUrl'];
                             return ListView(
                               children: <Widget>[

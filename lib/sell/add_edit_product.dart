@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:marketplace/models/product.dart';
@@ -35,9 +38,20 @@ class _AddEditProductState extends State<AddEditProduct> {
   String _name;
   int _price;
   String _description;
-  File _image;
+  File _image1;
+  File _image2;
+  File _image3;
   String _owner;
   int _contact;
+  String _uploadedFileURL1;
+  String _uploadedFileURL2;
+  String _uploadedFileURL3;
+  int progress = 0;
+  var id;
+  String _imageString1;
+  String _imageString2;
+  String _imageString3;
+
 
   @override
   void initState() {
@@ -48,16 +62,79 @@ class _AddEditProductState extends State<AddEditProduct> {
       _description = widget.product.description;
       _owner = widget.product.owner;
       _contact = widget.product.contact;
+      _imageString1 = widget.product.imageUrl1;
+      _imageString2 = widget.product.imageUrl2;
+      _imageString3 = widget.product.imageUrl3;
     }
   }
 
-  Future<void> chooseFile() async {
+  Future<void> chooseFile( int imageNumber ) async {
+
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
-      setState(() {
-        _image = image;
-      });
+
+      switch (imageNumber) {
+        case 1:
+          setState(() => _image1 = image);
+          break;
+        case 2:
+          setState(() => _image2 = image);
+          break;
+        case 3:
+          setState(() => _image3 = image);
+          break;
+      }
     });
   }
+
+  Future uploadingImages(int imageNumber) async {
+
+    final StorageReference mStorageRef = FirebaseStorage.instance
+        .ref()
+        .child('products/${widget.product?.id ?? _owner}/${DateTime.now()}.png');
+    switch (imageNumber) {
+      case 1:
+        final StorageUploadTask uploadTask = mStorageRef.putFile(_image1);
+        setState(() {
+          progress = 1;
+        });
+        final StorageTaskSnapshot uploadComplete = await uploadTask.onComplete;
+        _uploadedFileURL1 = await mStorageRef.getDownloadURL();
+        setState(() {
+          _uploadedFileURL1 = _uploadedFileURL1 as String;
+          progress = 0;
+        });
+        break;
+      case 2:
+        final StorageUploadTask uploadTask = mStorageRef.putFile(_image2);
+        setState(() {
+          progress = 1;
+        });
+        final StorageTaskSnapshot uploadComplete = await uploadTask.onComplete;
+        _uploadedFileURL2 = await mStorageRef.getDownloadURL();
+        setState(() {
+          _uploadedFileURL2 = _uploadedFileURL2 as String;
+          progress = 0;
+        });
+        break;
+      case 3:
+        final StorageUploadTask uploadTask = mStorageRef.putFile(_image3);
+        setState(() {
+          progress = 1;
+        });
+        final StorageTaskSnapshot uploadComplete = await uploadTask.onComplete;
+        _uploadedFileURL3 = await mStorageRef.getDownloadURL();
+        setState(() {
+          _uploadedFileURL3 = _uploadedFileURL3 as String;
+          progress = 0;
+        });
+        break;
+    }
+
+  }
+
+
+
+
 
   bool _validateAndSaveForm() {
     final form = _formKey.currentState;
@@ -71,13 +148,19 @@ class _AddEditProductState extends State<AddEditProduct> {
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
       try {
+        if (_image1 != null) await uploadingImages(1);
+        if (_image2 != null) await uploadingImages(2);
+        if (_image3 != null) await uploadingImages(3);
         final id = widget.product?.id ?? documentIdFromCurrentDate();
         final product = SingleProduct(
-          imageUrl: null,
+          imageUrl1: _uploadedFileURL1 == null ? _imageString1 : _uploadedFileURL1,
+            imageUrl2: _uploadedFileURL2 == null ? _imageString2 : _uploadedFileURL2,
+            imageUrl3: _uploadedFileURL3 == null ? _imageString3 : _uploadedFileURL3,
             id: id, name: _name, price: _price, description: _description ,owner: _owner,contact: _contact);
         await widget.database.create_edit_Product(product);
         Navigator.of(context).pop();
       } catch (e) {
+        print(e.toString());
         showDialog(
             context: context,
             builder: (context) {
@@ -136,6 +219,100 @@ class _AddEditProductState extends State<AddEditProduct> {
 
   List<Widget> _buildFormChildren() {
     return [
+      Row(
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              height: 150,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: (progress == 0)
+                      ?() { chooseFile(1);}: (){
+                    CircularProgressIndicator();
+                  } ,
+                  child: Container(
+                    height: 245.0,
+                    width: 100.0,
+                      child: new DecoratedBox(decoration:new BoxDecoration(
+                          borderRadius: BorderRadius.circular(10) ,
+                          border:  Border.all(color: Colors.grey[600]),
+                          shape: BoxShape.rectangle,
+                          image: DecorationImage(image:_image1 != null
+                              ? FileImage(_image1)
+                              : CachedNetworkImageProvider(
+                            _imageString1 == null
+                                ? 'https://imageog.flaticon.com/icons/png/512/117/117885.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF'
+                                : _imageString1,
+                          ),
+                      ) ),)
+                  ),
+                  ),
+                ),
+              ),
+          ),
+          Expanded(
+            child: Container(
+              height: 150,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: (progress == 0)
+                      ?() { chooseFile(2);}: (){
+                    CircularProgressIndicator();
+                  } ,
+                  child: Container(
+                      height: 245.0,
+                      width: 100.0,
+                      child: new DecoratedBox(decoration:new BoxDecoration(
+                          borderRadius: BorderRadius.circular(10) ,
+                          border:  Border.all(color: Colors.grey[600]),
+                          shape: BoxShape.rectangle,
+                          image: DecorationImage(image:_image2 != null
+                              ? FileImage(_image2)
+                              : CachedNetworkImageProvider(
+                            _imageString2 == null
+                                ? 'https://imageog.flaticon.com/icons/png/512/117/117885.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF'
+                                : _imageString2,
+                          ),
+                          ) ),)
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 150,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: (progress == 0)
+                      ?() { chooseFile(3);}: (){
+                    CircularProgressIndicator();
+                  } ,
+                  child: Container(
+                      height: 245.0,
+                      width: 100.0,
+                      child: new DecoratedBox(decoration:new BoxDecoration(
+                        borderRadius: BorderRadius.circular(10) ,
+                          border:  Border.all(color: Colors.grey[600]),
+                          shape: BoxShape.rectangle,
+                          image: DecorationImage(image:_image3 != null
+                              ? FileImage(_image3)
+                              : CachedNetworkImageProvider(
+                            _imageString3 == null
+                                ? 'https://imageog.flaticon.com/icons/png/512/117/117885.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF'
+                                : _imageString3,
+                          ),
+                          ) ),)
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
       TextFormField(
         initialValue: _name,
         decoration: InputDecoration(labelText: 'Product Name'),
@@ -172,27 +349,6 @@ class _AddEditProductState extends State<AddEditProduct> {
         keyboardType: TextInputType.number,
       ),
     ];
-  }
-
-  Widget _displayChild() {
-    if (_image == null) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(14.0, 70, 14, 70),
-        child: Icon(
-          Icons.add,
-          color: Colors.grey,
-        ),
-      );
-    } else {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(2.0, 10, 2, 10),
-        child: Image.file(
-          _image,
-          fit: BoxFit.fill,
-          height: 200,
-        ),
-      );
-    }
   }
 
 

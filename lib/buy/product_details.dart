@@ -1,3 +1,4 @@
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:marketplace/models/product.dart';
 import 'package:marketplace/services/database.dart';
@@ -31,6 +32,9 @@ class _Product_DetailsState extends State<Product_Details> {
   String _description;
   String _owner;
   int _contact;
+  String _imageString1 ;
+  String _imageString2 ;
+  String _imageString3 ;
 
   @override
   void initState() {
@@ -41,6 +45,9 @@ class _Product_DetailsState extends State<Product_Details> {
       _description = widget.product.description;
       _owner = widget.product.owner;
       _contact = widget.product.contact;
+      _imageString1 = widget.product.imageUrl1;
+      _imageString2 = widget.product.imageUrl2;
+      _imageString3 = widget.product.imageUrl3;
     }
   }
 
@@ -132,18 +139,50 @@ class _Product_DetailsState extends State<Product_Details> {
 
   @override
   Widget build(BuildContext context) {
+    final screensize = MediaQuery.of(context).size;
     return Scaffold(
       body: Column(
         children: [
           _header(context),
-          Container(
-            height: 200,
-            color: Colors.black,
-            child: GridTile(
-              child: Image.network(
-                  "https://images-eu.ssl-images-amazon.com/images/I/51W0eIsy7bL._SR600%2C315_PIWhiteStrip%2CBottomLeft%2C0%2C35_SCLZZZZZZZ_.jpg"),
+      Container(
+        height: 200,
+        child: Carousel(
+          boxFit: BoxFit.cover,
+          images: [
+            Image.network(
+              _imageString1 == null ?
+              "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png"
+                  : _imageString1,
+              height: 150,
+              fit:BoxFit.fitWidth,
+              width: screensize.width,
             ),
-          ),
+
+            Image.network(
+              _imageString2 == null ?
+              "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png"
+                  : _imageString2,
+              height: 150,
+              fit:BoxFit.fitWidth,
+              width: screensize.width,
+            ),
+
+            Image.network(
+              _imageString3 == null ?
+              "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png"
+                  : _imageString3,
+              height: 150,
+              fit:BoxFit.fitWidth,
+              width: screensize.width,
+            ),
+
+          ],
+          animationCurve: Curves.fastOutSlowIn,
+          autoplay: false,
+          animationDuration: Duration(milliseconds: 1000),
+        ),
+      ),
+
           Container(
             child: ListTile(
               title: Center(
@@ -250,8 +289,9 @@ class _Product_DetailsState extends State<Product_Details> {
       ),
     );
   }
+
+
 }
 
-/*
 
-*/
+
