@@ -145,7 +145,7 @@ class _DonationState extends State<Donation> {
                                       chipText1: donation.name,
                                       chipText2: donation.date,
                                       imgPath:
-                                          "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRqpYuGuB4yx_GpIvulgpOC99kNvnwuoXNqAcJf3d3aXv4TT1yN&usqp=CAU"),
+                                         donation.imageUrl==null ? 'https://media.gettyimages.com/photos/with-children-during-his-visit-to-ngo-prerna-to-formally-take-part-in-picture-id459239430?s=612x612' : donation.imageUrl),
                                 ),
                               )
                               .toList();

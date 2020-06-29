@@ -31,7 +31,7 @@ class _Donation_Event_DetailsState extends State<Donation_Event_Details> {
   String _description;
   String _owner;
   int _contact;
-
+  String _imageString ;
 
 
   @override
@@ -43,11 +43,13 @@ class _Donation_Event_DetailsState extends State<Donation_Event_Details> {
       _description = widget.donation.description;
       _owner = widget.donation.owner;
       _contact = widget.donation.contact;
+      _imageString = widget.donation.imageUrl;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final screensize = MediaQuery.of(context).size;
     return Scaffold(
 backgroundColor: Colors.grey[200],
       body: ListView(
@@ -57,7 +59,12 @@ backgroundColor: Colors.grey[200],
             height: 200,
             color: Colors.black,
             child: GridTile(
-              child: Image.network("https://dz01iyojmxk8t.cloudfront.net/wp-content/uploads/2020/02/09110934/2D2BB9BC-42E2-4DC1-B7C8-AB2F447404DA.jpeg"),
+              child: Image.network( _imageString == null ?
+              "https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png"
+                  : _imageString,
+                height: 150,
+                fit:BoxFit.fitWidth,
+                width: screensize.width,),
 
 
             ),

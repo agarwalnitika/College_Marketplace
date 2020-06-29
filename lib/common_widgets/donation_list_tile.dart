@@ -18,7 +18,7 @@ class DonationEventTile extends StatelessWidget {
           width: width,
           child: GestureDetector(
               onTap: onTap,
-              child: my_card ('assets/donationevent.jpg', donation.name)),
+              child: my_card (donation.imageUrl==null?'https://media.gettyimages.com/photos/with-children-during-his-visit-to-ngo-prerna-to-formally-take-part-in-picture-id459239430?s=612x612':donation.imageUrl, donation.name)),
         ),
       ],
     );
@@ -38,13 +38,13 @@ Widget my_card (String my_img, String my_txt) {
       boxShadow: [
         BoxShadow(
           color: Colors.grey.withOpacity(0.8),
-          spreadRadius: 1,
+          spreadRadius: 0.0,
           blurRadius: 9,
           offset: Offset(0, 7), // changes position of shadow
         ),
       ],
       image: new DecorationImage(
-        image: new AssetImage(my_img),
+        image: new NetworkImage(my_img),
         fit: BoxFit.cover,
       ),
     ),

@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:marketplace/models/donation.dart';
@@ -11,6 +13,7 @@ class AddEditDonation extends StatefulWidget {
       : super(key: key);
   final Database database;
   final DonationEvent donation;
+
 
   static Future<void> show(BuildContext context,
       {DonationEvent donation}) async {
@@ -38,7 +41,9 @@ class _AddEditDonationState extends State<AddEditDonation> {
   String _owner;
   int _contact;
   File _image;
-
+  String _imageString;
+  String _uploadedFileURL;
+  int progress = 0;
 
   @override
   void initState() {
@@ -49,9 +54,11 @@ class _AddEditDonationState extends State<AddEditDonation> {
       _description = widget.donation.description;
       _owner = widget.donation.owner;
       _contact = widget.donation.contact;
+      _imageString = widget.donation.imageUrl;
 
     }
   }
+
 
   Future<void> chooseFile() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
@@ -60,6 +67,31 @@ class _AddEditDonationState extends State<AddEditDonation> {
       });
     });
   }
+
+
+
+  Future uploadingImages() async {
+
+    final StorageReference mStorageRef = FirebaseStorage.instance
+        .ref()
+        .child('donations/${widget.donation?.id ?? _owner}/${DateTime.now()}.png');
+        final StorageUploadTask uploadTask = mStorageRef.putFile(_image);
+        setState(() {
+          progress = 1;
+        });
+        final StorageTaskSnapshot uploadComplete = await uploadTask.onComplete;
+        _uploadedFileURL= await mStorageRef.getDownloadURL();
+        setState(() {
+          _uploadedFileURL  = _uploadedFileURL as String;
+          progress = 0;
+        });
+
+  }
+
+
+
+
+
 
   bool _validateAndSaveForm() {
     final form = _formKey.currentState;
@@ -73,8 +105,11 @@ class _AddEditDonationState extends State<AddEditDonation> {
   Future<void> _submit() async {
     if (_validateAndSaveForm()) {
       try {
+
+        if (_image!= null) await uploadingImages();
         final id = widget.donation?.id ?? documentIdFromCurrentDate();
         final donation = DonationEvent(
+            imageUrl: _uploadedFileURL == null ? _imageString : _uploadedFileURL,
           id: id, name: _name, date: _date, description: _description , owner: _owner, contact: _contact);
         await widget.database.create_edit_Donation(donation );
         Navigator.of(context).pop();
@@ -229,7 +264,39 @@ class _AddEditDonationState extends State<AddEditDonation> {
   }
 
   List<Widget> _buildFormChildren() {
+    final screensize = MediaQuery.of(context).size;
     return [
+      Container(
+        height: 200,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GestureDetector(
+            onTap: (progress == 0)
+                ?() { chooseFile();}: (){
+              CircularProgressIndicator();
+            } ,
+            child: Container(
+                height: 245.0,
+                width: screensize.width,
+                child: new DecoratedBox(decoration:new BoxDecoration(
+                    borderRadius: BorderRadius.circular(10) ,
+                    border:  Border.all(color: Colors.grey[600]),
+                    shape: BoxShape.rectangle,
+                    image: DecorationImage(
+                      fit: BoxFit.fitWidth,
+                      image:_image != null
+                        ? FileImage(_image)
+                        : CachedNetworkImageProvider(
+                      _imageString == null
+                          ? 'https://imageog.flaticon.com/icons/png/512/117/117885.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF'
+                          : _imageString,
+
+                    ),
+                    ) ),)
+            ),
+          ),
+        ),
+      ),
       TextFormField(
         initialValue: _name,
         decoration: InputDecoration(labelText: 'Event Name'),
