@@ -33,6 +33,7 @@ dependencies:
   firebase_storage: ^3.0.3
   video_player: ^0.8.0
   cached_network_image: 2.2.0+1
+  firebase_messaging: ^6.0.16
 
 
 

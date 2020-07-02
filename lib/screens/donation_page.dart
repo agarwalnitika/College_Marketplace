@@ -8,7 +8,6 @@ import 'package:marketplace/common_widgets/product_list_tile.dart';
 import 'package:marketplace/common_widgets/quad_clipper.dart';
 import 'package:marketplace/donate/donation_event_details.dart';
 import 'package:marketplace/models/donation.dart';
-import 'package:marketplace/models/product.dart';
 import 'package:marketplace/services/database.dart';
 import 'package:marketplace/theme/color.dart';
 import 'package:provider/provider.dart';
